@@ -3,7 +3,7 @@ import google.generativeai as genai
 import PyPDF2
 
 # --- CONFIGURATION ---
-# 🚨 PASTE YOUR TIER 1 GOOGLE KEY BELOW (Inside the quotes) 🚨
+# Use the secure key from Streamlit Secrets
 API_KEY = st.secrets["GOOGLE_API_KEY"]
 
 # Configure the AI with the Modern Engine
@@ -30,13 +30,16 @@ if uploaded_file is not None:
         
         st.success("✅ Document Loaded & Analyzed!")
 
-        # --- STEP 3: THE CHAT ---
-        user_question = st.text_input("What would you like to know about this property?")
+        # --- STEP 3: THE CHAT (New Form Version) ---
+        with st.form(key='chat_form'):
+            user_question = st.text_input("What would you like to know about this property?")
+            # This makes the "Enter" key work!
+            submit_button = st.form_submit_button("Ask Agent")
 
-        if st.button("Ask Agent"):
+        if submit_button:
             if user_question:
                 with st.spinner("Agent is checking the specific rules..."):
-                    # --- STEP 4: THE BRAIN (Now smarter) ---
+                    # --- STEP 4: THE BRAIN ---
                     prompt = f"""
                     You are a helpful, professional Real Estate Leasing Agent.
                     Your goal is to provide accurate information to potential tenants based strictly on the Property Document.
