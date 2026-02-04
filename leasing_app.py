@@ -4,7 +4,7 @@ import PyPDF2
 
 # --- CONFIGURATION ---
 # 🚨 PASTE YOUR TIER 1 GOOGLE KEY BELOW (Inside the quotes) 🚨
-API_KEY = "AIzaSyAGA_HlWWjNkWOdTyxCi-jYaorvy5NB7Ag"
+API_KEY = st.secrets["GOOGLE_API_KEY"]
 
 # Configure the AI with the Modern Engine
 genai.configure(api_key=API_KEY)
