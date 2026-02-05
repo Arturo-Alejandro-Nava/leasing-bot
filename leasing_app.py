@@ -13,8 +13,8 @@ model = genai.GenerativeModel('gemini-2.0-flash')
 # --- THE WEBPAGE LAYOUT ---
 st.set_page_config(page_title="Leasing Assistant", page_icon="🏢")
 
-st.title("🏢 Virtual Leasing Agent (Vision Enabled)")
-st.write("Upload any document (Digital PDF, Scanned Image, or Handwriting).")
+st.title("🏢 Virtual Leasing Agent")
+st.write("Upload the Lease or Building Rules, and ask any question.")
 
 # --- STEP 1: PDF UPLOADER ---
 uploaded_file = st.file_uploader("Upload Property Document", type=["pdf", "png", "jpg"])
@@ -23,12 +23,11 @@ uploaded_file = st.file_uploader("Upload Property Document", type=["pdf", "png",
 if uploaded_file is not None:
     
     # --- STEP 2: HANDLE THE FILE ---
-    # Since this is a vision model, we need to upload the actual file to Google,
-    # not just extract text. We must save it to a temporary file first.
+    # Save file securely to temporary storage
     with open("temp_leasing_doc.pdf", "wb") as f:
         f.write(uploaded_file.getbuffer())
     
-    st.success("✅ Document uploaded! The AI is looking at it now...")
+    st.success("✅ Document Loaded & Secure")
 
     # --- STEP 3: THE CHAT FORM ---
     with st.form(key='chat_form'):
@@ -37,12 +36,12 @@ if uploaded_file is not None:
 
     if submit_button and user_question:
         try:
-            with st.spinner("Agent is reading the document (Vision Scan)..."):
+            with st.spinner("Agent is analyzing the document..."):
                 
-                # 1. Upload the file to Google's 'Brain'
+                # 1. Upload the file to the Enterprise Engine
                 sample_file = genai.upload_file(path="temp_leasing_doc.pdf", display_name="Lease Doc")
                 
-                # 2. Define the Prompt
+                # 2. Define the Brain Rules
                 system_prompt = """
                 You are a professional Leasing Agent.
                 The user has uploaded a document (it might be a scanned PDF or image).
@@ -55,7 +54,7 @@ if uploaded_file is not None:
                 5. If you cannot find the answer, say "I cannot find that in this document."
                 """
                 
-                # 3. Ask the Question (We send the Prompt + The File + The Question)
+                # 3. Ask the Question
                 response = model.generate_content([system_prompt, sample_file, user_question])
                 
                 # 4. Display Result
